@@ -6,6 +6,7 @@ import 'package:espot/ui/widgets/forms.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -150,6 +151,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 CustomFilledButton(
                   title: 'Continue',
                   onPressed: () async {
+                    EasyLoading.show(status: 'loading...');
                     User? user = await signUpWithEmailAndPassword(
                         nameController.text,
                         emailController.text,
@@ -162,6 +164,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       CustomSnackBar.showToast(
                           context, 'Email sudah terdaftar');
                     }
+                    EasyLoading.dismiss();
                   },
                 ),
               ],

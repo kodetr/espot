@@ -8,6 +8,7 @@ import 'package:espot/ui/widgets/buttons.dart';
 import 'package:espot/ui/widgets/forms.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class DataUsersInputPage extends StatefulWidget {
   final UserModel? dataUser;
@@ -178,6 +179,7 @@ class _DataUsersInputPageState extends State<DataUsersInputPage>
                       if (validate()) {
                         // TODO CREATE
                         if (widget.dataUser == null) {
+                          EasyLoading.show(status: 'loading...');
                           User? user = await signUpWithEmailAndPassword(
                             nameController.text,
                             emailController.text,
@@ -191,13 +193,16 @@ class _DataUsersInputPageState extends State<DataUsersInputPage>
                             CustomSnackBar.showToast(
                                 context, 'Email sudah terdaftar');
                           }
+                          EasyLoading.dismiss();
                           // TODO UPDATE
                         } else {
+                          EasyLoading.show(status: 'loading...');
                           updateData(
                             nameController.text,
                             emailController.text,
                             phoneController.text,
                           );
+                          EasyLoading.dismiss();
                         }
                       } else {
                         CustomSnackBar.showToast(

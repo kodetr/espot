@@ -62,7 +62,7 @@ class ProfilePage extends StatelessWidget with CacheManager {
                         shape: BoxShape.circle,
                         image: DecorationImage(
                           fit: BoxFit.fill,
-                          image: getPhoto() == null
+                          image: getPhoto() == ''
                               ? const AssetImage(
                                   'assets/img_admin.png',
                                 )

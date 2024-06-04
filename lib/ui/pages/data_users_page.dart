@@ -7,6 +7,7 @@ import 'package:espot/shared/theme.dart';
 import 'package:espot/ui/widgets/data_users_item.dart';
 import 'package:espot/ui/widgets/forms.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class DataUsersPage extends StatefulWidget {
   const DataUsersPage({Key? key}) : super(key: key);
@@ -29,6 +30,7 @@ class _DataUsersPageState extends State<DataUsersPage> {
   }
 
   Future<void> _fetchUsers() async {
+    EasyLoading.show(status: 'loading...');
     DatabaseReference usersRef = FirebaseDatabase.instance.ref().child(USERS);
     DatabaseEvent event = await usersRef.once();
 
@@ -43,11 +45,13 @@ class _DataUsersPageState extends State<DataUsersPage> {
       setState(() {
         usersList = tempUsersList;
       });
+      EasyLoading.dismiss();
     }
   }
 
   Future<void> deleteUser() async {
     if (selectedUsers != null) {
+      EasyLoading.show(status: 'loading...');
       String uid = selectedUsers!.uid!;
       // Dapatkan referensi ke node pengguna berdasarkan UID
       DatabaseReference userRef =
@@ -72,10 +76,12 @@ class _DataUsersPageState extends State<DataUsersPage> {
           Navigator.pushNamed(context, '/data-success-delete');
         }
       }
+      EasyLoading.dismiss();
     }
   }
 
   Future<void> searchUserByName(String name) async {
+    EasyLoading.show(status: 'loading...');
     String searchName = name.toLowerCase();
 
     List<UserModel> foundUsers =
@@ -86,6 +92,7 @@ class _DataUsersPageState extends State<DataUsersPage> {
         usersList = foundUsers;
       });
     }
+    EasyLoading.dismiss();
   }
 
   @override

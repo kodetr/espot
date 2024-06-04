@@ -8,6 +8,7 @@ import 'package:espot/shared/theme.dart';
 import 'package:espot/ui/widgets/buttons.dart';
 import 'package:espot/ui/widgets/forms.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class ProfileEditPage extends StatefulWidget with CacheManager {
   final UserModel data;
@@ -140,11 +141,13 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                     title: 'Update Now',
                     onPressed: () {
                       if (validate()) {
+                        EasyLoading.show(status: 'loading...');
                         updateData(
                           nameController.text,
                           emailController.text,
                           phoneController.text,
                         );
+                        EasyLoading.dismiss();
                       } else {
                         CustomSnackBar.showToast(
                             context, 'Inputan masih kosong');

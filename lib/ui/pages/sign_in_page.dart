@@ -8,6 +8,7 @@ import 'package:espot/ui/widgets/forms.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({Key? key}) : super(key: key);
@@ -113,6 +114,7 @@ class _SignInPageState extends State<SignInPage> with CacheManager {
               CustomFilledButton(
                 title: 'Sign In',
                 onPressed: () async {
+                  EasyLoading.show(status: 'loading...');
                   User? user = await signInWithEmailAndPassword(
                       emailController.text, passwordController.text);
 
@@ -140,10 +142,7 @@ class _SignInPageState extends State<SignInPage> with CacheManager {
                   } else {
                     CustomSnackBar.showToast(context, 'Login Gagal!');
                   }
-
-                  // if (await saveUser(user)) {
-                  // Navigator.pushNamed(context, '/home');
-                  // }
+                  EasyLoading.dismiss();
                 },
               ),
             ],

@@ -9,6 +9,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:espot/shared/theme.dart';
 import 'package:espot/ui/widgets/buttons.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -160,7 +161,9 @@ class _ProfileEditPhotoPageState extends State<ProfileEditPhotoPage> {
                         ),
                       );
                     } else {
+                      EasyLoading.show(status: 'loading...');
                       _uploadImage();
+                      EasyLoading.dismiss();
                     }
                   },
                 ),

@@ -5,6 +5,7 @@ import 'package:espot/ui/widgets/data_event_item.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:espot/shared/theme.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class DataEventPage extends StatefulWidget {
   const DataEventPage({Key? key}) : super(key: key);
@@ -27,6 +28,7 @@ class _DataEventPageState extends State<DataEventPage> {
   }
 
   Future<void> _fetchEvents() async {
+    EasyLoading.show(status: 'loading...');
     DatabaseReference usersRef = FirebaseDatabase.instance.ref().child(EVENTS);
     DatabaseEvent event = await usersRef.once();
 
@@ -41,11 +43,13 @@ class _DataEventPageState extends State<DataEventPage> {
       setState(() {
         eventsList = tempList;
       });
+      EasyLoading.dismiss();
     }
   }
 
   Future<void> deleteEvents() async {
     if (selectedEvents != null) {
+      EasyLoading.show(status: 'loading...');
       String uid = selectedEvents!.uid!;
       // Dapatkan referensi ke node pengguna berdasarkan UID
       DatabaseReference ref =
@@ -57,6 +61,7 @@ class _DataEventPageState extends State<DataEventPage> {
         await ref.remove();
         Navigator.pushNamed(context, '/data-success-delete');
       }
+      EasyLoading.dismiss();
     }
   }
 
@@ -118,7 +123,9 @@ class _DataEventPageState extends State<DataEventPage> {
                         GestureDetector(
                           child: const Icon(Icons.delete),
                           onTapUp: (details) {
+                            EasyLoading.show(status: 'loading...');
                             deleteEvents();
+                            EasyLoading.dismiss();
                           },
                         ),
                       ],

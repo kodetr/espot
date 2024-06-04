@@ -12,6 +12,7 @@ import 'package:espot/ui/widgets/buttons.dart';
 import 'package:espot/ui/widgets/forms.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 
@@ -228,10 +229,14 @@ class _DataEventInputPageState extends State<DataEventInputPage>
                       if (validate()) {
                         // TODO CREATE
                         if (widget.data == null) {
+                          EasyLoading.show(status: 'loading...');
                           _addEvent(descController.text);
+                          EasyLoading.dismiss();
                           // TODO UPDATE
                         } else {
+                          EasyLoading.show(status: 'loading...');
                           updateData(descController.text);
+                          EasyLoading.dismiss();
                         }
                       } else {
                         CustomSnackBar.showToast(

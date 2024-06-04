@@ -151,7 +151,7 @@ class _HomePageState extends State<HomePage> {
                 shape: BoxShape.circle,
                 image: DecorationImage(
                   fit: BoxFit.fill,
-                  image: widget.getPhoto() == null
+                  image: widget.getPhoto() == ''
                       ? const AssetImage(
                           'assets/img_admin.png',
                         )
