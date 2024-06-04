@@ -58,19 +58,16 @@ class ProfilePage extends StatelessWidget with CacheManager {
                     child: Container(
                       width: 120,
                       height: 120,
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         image: DecorationImage(
-                            //   image: state.data.profilePicture == null
-                            //       ? const AssetImage(
-                            //           'assets/img_profile.png',
-                            //         )
-                            //       : NetworkImage(state.data.profilePicture!)
-                            //           as ImageProvider,
-                            // ),
-                            image: AssetImage(
-                          'assets/img_admin.png',
-                        )),
+                          fit: BoxFit.fill,
+                          image: getPhoto() == null
+                              ? const AssetImage(
+                                  'assets/img_admin.png',
+                                )
+                              : NetworkImage(getPhoto()!) as ImageProvider,
+                        ),
                       ),
                       child: Align(
                         alignment: Alignment.topRight,
@@ -113,48 +110,47 @@ class ProfilePage extends StatelessWidget with CacheManager {
                       iconUrl: 'assets/ic_phone.png',
                       title: 'Nomor Ponsel',
                       value: '${getPHONE()}'),
-                  ProfileMenuItem(
-                    iconUrl: 'assets/ic_edit_profile.png',
-                    title: 'Edit Profile',
-                    onTap: () async {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ProfileEditPage(
-                            data: UserModel(
-                              uid: "1",
-                              name: 'Tanwir',
-                              phone: '08788',
-                              password: '123',
-                              profilePicture: '',
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  ProfileMenuItem(
-                    iconUrl: 'assets/ic_password.png',
-                    title: 'Ganti Password',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ProfileEditPasswordPage(
-                            data: UserModel(
-                              uid: "1",
-                              password: '123',
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  ProfileMenuItem(
-                    iconUrl: 'assets/ic_help.png',
-                    title: 'Help Center',
-                    onTap: () {},
-                  ),
+                  getName() != 'Admin'
+                      ? ProfileMenuItem(
+                          iconUrl: 'assets/ic_edit_profile.png',
+                          title: 'Edit Profile',
+                          onTap: () async {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ProfileEditPage(
+                                  data: UserModel(
+                                    uid: "1",
+                                    name: 'Tanwir',
+                                    phone: '08788',
+                                    password: '123',
+                                    profilePicture: '',
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        )
+                      : Container(),
+                  getName() != 'Admin'
+                      ? ProfileMenuItem(
+                          iconUrl: 'assets/ic_password.png',
+                          title: 'Ganti Password',
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ProfileEditPasswordPage(
+                                  data: UserModel(
+                                    uid: "1",
+                                    password: '123',
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        )
+                      : Container(),
                   ProfileMenuItem(
                     iconUrl: 'assets/ic_logout.png',
                     title: 'Log Out',

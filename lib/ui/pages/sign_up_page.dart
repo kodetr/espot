@@ -39,6 +39,7 @@ class _SignUpPageState extends State<SignUpPage> {
       'name': name,
       'email': email,
       'phone': phone,
+      'profilePicture': '',
       'verified': false,
     }).then((value) {
       print("User Added");

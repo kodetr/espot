@@ -15,71 +15,71 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: BottomAppBar(
-        color: whiteColor,
-        shape: const CircularNotchedRectangle(),
-        clipBehavior: Clip.antiAlias,
-        notchMargin: 6,
-        elevation: 0,
-        child: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: whiteColor,
-          elevation: 0,
-          selectedItemColor: redColor,
-          unselectedItemColor: blackColor,
-          showSelectedLabels: true,
-          showUnselectedLabels: true,
-          selectedLabelStyle: blueTextStyle.copyWith(
-            fontSize: 10,
-            fontWeight: medium,
-          ),
-          unselectedLabelStyle: blackTextStyle.copyWith(
-            fontSize: 10,
-            fontWeight: medium,
-          ),
-          items: [
-            BottomNavigationBarItem(
-              icon: Image.asset(
-                'assets/ic_overview.png',
-                width: 20,
-                color: redColor,
-              ),
-              label: 'Overview',
-            ),
-            BottomNavigationBarItem(
-              icon: Image.asset(
-                'assets/ic_teams.png',
-                width: 22,
-              ),
-              label: 'Teams',
-            ),
-            BottomNavigationBarItem(
-              icon: Image.asset(
-                'assets/ic_event.png',
-                width: 24,
-              ),
-              label: 'Event',
-            ),
-            BottomNavigationBarItem(
-              icon: Image.asset(
-                'assets/ic_notif.png',
-                width: 20,
-              ),
-              label: 'Konfirmasi',
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-        onPressed: () {},
-        backgroundColor: redColor,
-        child: Image.asset(
-          'assets/ic_plus_circle.png',
-          width: 24,
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      // bottomNavigationBar: BottomAppBar(
+      //   color: whiteColor,
+      //   shape: const CircularNotchedRectangle(),
+      //   clipBehavior: Clip.antiAlias,
+      //   notchMargin: 6,
+      //   elevation: 0,
+      //   child: BottomNavigationBar(
+      //     type: BottomNavigationBarType.fixed,
+      //     backgroundColor: whiteColor,
+      //     elevation: 0,
+      //     selectedItemColor: redColor,
+      //     unselectedItemColor: blackColor,
+      //     showSelectedLabels: true,
+      //     showUnselectedLabels: true,
+      //     selectedLabelStyle: blueTextStyle.copyWith(
+      //       fontSize: 10,
+      //       fontWeight: medium,
+      //     ),
+      //     unselectedLabelStyle: blackTextStyle.copyWith(
+      //       fontSize: 10,
+      //       fontWeight: medium,
+      //     ),
+      //     items: [
+      //       BottomNavigationBarItem(
+      //         icon: Image.asset(
+      //           'assets/ic_overview.png',
+      //           width: 20,
+      //           color: redColor,
+      //         ),
+      //         label: 'Overview',
+      //       ),
+      //       BottomNavigationBarItem(
+      //         icon: Image.asset(
+      //           'assets/ic_teams.png',
+      //           width: 22,
+      //         ),
+      //         label: 'Teams',
+      //       ),
+      //       BottomNavigationBarItem(
+      //         icon: Image.asset(
+      //           'assets/ic_event.png',
+      //           width: 24,
+      //         ),
+      //         label: 'Event',
+      //       ),
+      //       BottomNavigationBarItem(
+      //         icon: Image.asset(
+      //           'assets/ic_notif.png',
+      //           width: 20,
+      //         ),
+      //         label: 'Konfirmasi',
+      //       ),
+      //     ],
+      //   ),
+      // ),
+      // floatingActionButton: FloatingActionButton(
+      //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+      //   onPressed: () {},
+      //   backgroundColor: redColor,
+      //   child: Image.asset(
+      //     'assets/ic_plus_circle.png',
+      //     width: 24,
+      //   ),
+      // ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       body: ListView(
         padding: const EdgeInsets.symmetric(
           horizontal: 24,
@@ -147,18 +147,16 @@ class _HomePageState extends State<HomePage> {
             child: Container(
               width: 60,
               height: 60,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 image: DecorationImage(
-                    // image: state.data.profilePicture == null
-                    //     ? const AssetImage(
-                    //         'assets/img_profile.png',
-                    //       )
-                    //     : NetworkImage(state.data.profilePicture!)
-                    //         as ImageProvider,
-                    image: AssetImage(
-                  'assets/img_admin.png',
-                )),
+                  fit: BoxFit.fill,
+                  image: widget.getPhoto() == null
+                      ? const AssetImage(
+                          'assets/img_admin.png',
+                        )
+                      : NetworkImage(widget.getPhoto()!) as ImageProvider,
+                ),
               ),
             ),
           ),

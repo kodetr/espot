@@ -126,11 +126,13 @@ class _SignInPageState extends State<SignInPage> with CacheManager {
                           .child(uid);
 
                       usersRef.once().then((DatabaseEvent event) {
-                        Map<dynamic, dynamic> userData =
-                            event.snapshot.value as Map<dynamic, dynamic>;
+                        if (event.snapshot.value != null) {
+                          Map<dynamic, dynamic> userData =
+                              event.snapshot.value as Map<dynamic, dynamic>;
 
-                        UserModel user = UserModel.fromMap(userData, uid);
-                        saveUser(user);
+                          UserModel user = UserModel.fromMap(userData, uid);
+                          saveUser(user);
+                        }
                       });
                     } catch (e) {
                       print(e);

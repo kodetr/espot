@@ -1,12 +1,18 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:espot/models/sign_up_form_model.dart';
+import 'package:espot/shared/cache_manager.dart';
+import 'package:espot/shared/constant.dart';
+import 'package:espot/shared/snackbar.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:espot/shared/theme.dart';
 import 'package:espot/ui/widgets/buttons.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class ProfileEditPhotoPage extends StatefulWidget {
+class ProfileEditPhotoPage extends StatefulWidget with CacheManager {
   final SignUpFormModel data;
 
   const ProfileEditPhotoPage({
@@ -20,6 +26,7 @@ class ProfileEditPhotoPage extends StatefulWidget {
 
 class _ProfileEditPhotoPageState extends State<ProfileEditPhotoPage> {
   XFile? selectedImage;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
 
   selectImage() async {
     final imagePicker = ImagePicker();
@@ -30,6 +37,45 @@ class _ProfileEditPhotoPageState extends State<ProfileEditPhotoPage> {
       setState(() {
         selectedImage = image;
       });
+    }
+  }
+
+  Future<void> _uploadImage() async {
+    if (selectedImage == null) return;
+
+    try {
+      String fileName = 'uploads/${DateTime.now().millisecondsSinceEpoch}.png';
+      File file = File(selectedImage!.path);
+      UploadTask uploadTask = _storage.ref().child(fileName).putFile(file);
+
+      TaskSnapshot taskSnapshot = await uploadTask;
+      String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+
+      updateDataPhoto(downloadUrl);
+      print(downloadUrl);
+      widget.savePhoto(downloadUrl);
+
+      Navigator.pushNamed(context, '/data-success');
+    } catch (e) {
+      print('Error: $e');
+
+      CustomSnackBar.showToast(context, 'Failed to upload image');
+    }
+  }
+
+  Future<void> updateDataPhoto(String photo) async {
+    if (widget.getId() != null) {
+      String uid = widget.getId()!;
+
+      DatabaseReference userRef =
+          FirebaseDatabase.instance.ref().child(USERS).child(uid);
+      DatabaseEvent event = await userRef.once();
+
+      if (event.snapshot.value != null) {
+        await userRef.update({
+          'profilePicture': photo,
+        });
+      }
     }
   }
 
@@ -114,14 +160,7 @@ class _ProfileEditPhotoPageState extends State<ProfileEditPhotoPage> {
                         ),
                       );
                     } else {
-                      // context.read<AuthBloc>().add(
-                      //       AuthRegister(
-                      //         widget.data.copyWith(
-                      //           profilePicture:
-                      //               'data:image/png;base64,${base64Encode(File(selectedImage!.path).readAsBytesSync())}',
-                      //         ),
-                      //       ),
-                      // );
+                      _uploadImage();
                     }
                   },
                 ),

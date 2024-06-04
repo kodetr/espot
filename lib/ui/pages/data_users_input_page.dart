@@ -44,6 +44,7 @@ class _DataUsersInputPageState extends State<DataUsersInputPage>
           'name': name,
           'email': email,
           'phone': phone,
+          'profilePicture': '',
           'verified': false,
         })
         .then((value) => print("User Added"))

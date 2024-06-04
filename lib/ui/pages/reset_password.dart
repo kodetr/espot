@@ -1,7 +1,9 @@
+import 'package:espot/shared/snackbar.dart';
 import 'package:espot/shared/theme.dart';
 import 'package:espot/ui/widgets/buttons.dart';
 import 'package:espot/ui/widgets/forms.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ResetPasswordPage extends StatefulWidget {
   const ResetPasswordPage({Key? key}) : super(key: key);
@@ -11,8 +13,22 @@ class ResetPasswordPage extends StatefulWidget {
 }
 
 class _ResetPasswordPageState extends State<ResetPasswordPage> {
-  final phoneController = TextEditingController(text: '');
-  final passwordController = TextEditingController(text: '');
+  final emailController = TextEditingController(text: '');
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final TextEditingController _emailController = TextEditingController();
+
+  Future<void> _resetPassword(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      Navigator.pushNamed(context, '/reset-password-success');
+    } catch (e) {
+      print('Error: $e');
+
+      CustomSnackBar.showToast(
+          context, 'Gagal mengirim email pengaturan ulang kata sandi');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +75,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 // NOTE: EMAIL INPUT
                 CustomFormField(
                   title: 'Email',
-                  controller: phoneController,
+                  controller: emailController,
                 ),
                 const SizedBox(
                   height: 30,
@@ -67,15 +83,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 CustomFilledButton(
                   title: 'Send',
                   onPressed: () {
-                    Navigator.pushNamed(context, '/reset-password-success');
-                    // context.read<AuthBloc>().add(
-                    //       AuthLogin(
-                    //         SignInFormModel(
-                    //           phoneNumber: phoneController.text,
-                    //           password: passwordController.text,
-                    //         ),
-                    //       ),
-                    //     );
+                    _resetPassword(emailController.text);
                   },
                 ),
               ],
@@ -85,7 +93,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             height: 30,
           ),
           Text(
-            'Masukan Email yang Terdaftar\nuntuk mendapatkan password Baru',
+            'Enter your registered email\nto get a new password',
             textAlign: TextAlign.center,
             style: blackTextStyle.copyWith(
               fontSize: 15,

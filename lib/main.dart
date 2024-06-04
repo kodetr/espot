@@ -1,6 +1,7 @@
 import 'package:espot/ui/pages/data_success_delete_page.dart';
 import 'package:espot/ui/pages/data_success_update_page.dart';
 import 'package:espot/ui/pages/profile_edit_password_success_page.dart';
+import 'package:espot/ui/pages/profile_edit_photo_success_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:espot/shared/theme.dart';
@@ -67,6 +68,8 @@ class MyApp extends StatelessWidget {
         '/data-success-delete': (context) => const DataSuccessDeletePage(),
         '/profile': (context) => const ProfilePage(),
         '/profile-update-success': (context) => const ProfileEditSuccessPage(),
+        '/profile-update_photo-success': (context) =>
+            const ProfileEditPhotoSuccessPage(),
         '/profile-update-password-success': (context) =>
             const ProfileEditPasswordSuccessPage(),
       },

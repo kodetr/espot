@@ -1,9 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:espot/shared/theme.dart';
 import 'package:espot/ui/widgets/buttons.dart';
-import 'package:flutter/material.dart';
 
-class ResetPasswordSuccessPage extends StatelessWidget {
-  const ResetPasswordSuccessPage({Key? key}) : super(key: key);
+class ProfileEditPhotoSuccessPage extends StatelessWidget {
+  const ProfileEditPhotoSuccessPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +13,7 @@ class ResetPasswordSuccessPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Sent Successfully',
+              'Nice Update!',
               style: blackTextStyle.copyWith(
                 fontSize: 20,
                 fontWeight: semiBold,
@@ -24,7 +24,7 @@ class ResetPasswordSuccessPage extends StatelessWidget {
               height: 26,
             ),
             Text(
-              'Please check\nyour email',
+              'Photo changed successfully',
               style: greyTextStyle.copyWith(
                 fontSize: 16,
               ),
@@ -35,10 +35,10 @@ class ResetPasswordSuccessPage extends StatelessWidget {
             ),
             CustomFilledButton(
               width: 183,
-              title: 'Get Started',
+              title: 'Back to Home',
               onPressed: () {
                 Navigator.pushNamedAndRemoveUntil(
-                    context, '/sign-in', (route) => false);
+                    context, '/home', (route) => false);
               },
             ),
           ],

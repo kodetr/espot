@@ -13,7 +13,7 @@ class SignUpSuccessPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Akun Berhasil\nTerdaftar',
+              'Account Successfully\nRegistered',
               style: blackTextStyle.copyWith(
                 fontSize: 20,
                 fontWeight: semiBold,
@@ -24,7 +24,7 @@ class SignUpSuccessPage extends StatelessWidget {
               height: 26,
             ),
             Text(
-              'Veniam tempor incididunt deserunt eiusmod.',
+              'Please log in with the email and password\nthat you have filled in',
               style: greyTextStyle.copyWith(
                 fontSize: 16,
               ),
@@ -38,7 +38,7 @@ class SignUpSuccessPage extends StatelessWidget {
               title: 'Get Started',
               onPressed: () {
                 Navigator.pushNamedAndRemoveUntil(
-                    context, '/home', (route) => false);
+                    context, '/sign-in', (route) => false);
               },
             ),
           ],
