@@ -44,6 +44,8 @@ class _DataTeamsPageState extends State<DataTeamsPage> {
         teamsList = tempList;
       });
       EasyLoading.dismiss();
+    } else {
+      EasyLoading.dismiss();
     }
   }
 

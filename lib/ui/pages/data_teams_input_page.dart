@@ -89,6 +89,7 @@ class _DataTeamsInputPageState extends State<DataTeamsInputPage>
     if (selectedImage == null) return;
 
     try {
+      EasyLoading.show(status: 'loading...');
       String fileName = 'uploads/${DateTime.now().millisecondsSinceEpoch}.png';
       File file = File(selectedImage!.path);
       UploadTask uploadTask = _storage.ref().child(fileName).putFile(file);
@@ -115,10 +116,11 @@ class _DataTeamsInputPageState extends State<DataTeamsInputPage>
       }).then((value) {
         Navigator.pushNamed(context, '/data-success');
         print("Event Added");
+        EasyLoading.dismiss();
       }).catchError((error) => print("Failed to add Event: $error"));
     } catch (e) {
       print('Error: $e');
-
+      EasyLoading.dismiss();
       CustomSnackBar.showToast(context, 'Failed to upload image');
     }
   }
@@ -134,6 +136,7 @@ class _DataTeamsInputPageState extends State<DataTeamsInputPage>
     if (selectedImage == null) return;
     if (widget.data != null) {
       try {
+        EasyLoading.show(status: 'loading...');
         String uid = widget.data!.uid!;
         String fileName =
             'uploads/${DateTime.now().millisecondsSinceEpoch}.png';
@@ -156,9 +159,10 @@ class _DataTeamsInputPageState extends State<DataTeamsInputPage>
           'image': downloadUrl,
         });
         Navigator.pushNamed(context, '/data-success-update');
+        EasyLoading.dismiss();
       } catch (e) {
         print('Error: $e');
-
+        EasyLoading.dismiss();
         CustomSnackBar.showToast(context, 'Failed to upload image');
       }
     }
@@ -271,7 +275,6 @@ class _DataTeamsInputPageState extends State<DataTeamsInputPage>
                       if (validate()) {
                         // TODO CREATE
                         if (widget.data == null) {
-                          EasyLoading.show(status: 'loading...');
                           _addEvent(
                             descController.text,
                             player1Controller.text,
@@ -280,10 +283,9 @@ class _DataTeamsInputPageState extends State<DataTeamsInputPage>
                             player4Controller.text,
                             player5Controller.text,
                           );
-                          EasyLoading.dismiss();
+
                           // TODO UPDATE
                         } else {
-                          EasyLoading.show(status: 'loading...');
                           updateData(
                             descController.text,
                             player1Controller.text,
@@ -292,7 +294,6 @@ class _DataTeamsInputPageState extends State<DataTeamsInputPage>
                             player4Controller.text,
                             player5Controller.text,
                           );
-                          EasyLoading.dismiss();
                         }
                       } else {
                         CustomSnackBar.showToast(

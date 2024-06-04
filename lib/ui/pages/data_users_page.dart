@@ -46,6 +46,8 @@ class _DataUsersPageState extends State<DataUsersPage> {
         usersList = tempUsersList;
       });
       EasyLoading.dismiss();
+    } else {
+      EasyLoading.dismiss();
     }
   }
 

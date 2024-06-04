@@ -1,4 +1,3 @@
-import 'package:espot/models/event_model.dart';
 import 'package:espot/models/teams_model.dart';
 import 'package:flutter/material.dart';
 import 'package:espot/shared/theme.dart';
@@ -59,6 +58,84 @@ class DataTeamsItem extends StatelessWidget {
                 ),
           const SizedBox(
             height: 23,
+          ),
+          Center(
+            child: DataTable(
+              clipBehavior: Clip.hardEdge,
+              columns: const <DataColumn>[
+                DataColumn(
+                  label: Text(
+                    'Player ID',
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Player Name',
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                ),
+              ],
+              rows: <DataRow>[
+                DataRow(
+                  cells: <DataCell>[
+                    const DataCell(Text('Player 1')),
+                    DataCell(Text('${dataTeams.player1}')),
+                  ],
+                ),
+                DataRow(
+                  cells: <DataCell>[
+                    const DataCell(Text('Player 2')),
+                    DataCell(Text('${dataTeams.player2}')),
+                  ],
+                ),
+                DataRow(
+                  cells: <DataCell>[
+                    const DataCell(Text('Player 3')),
+                    DataCell(Text('${dataTeams.player3}')),
+                  ],
+                ),
+                DataRow(
+                  cells: <DataCell>[
+                    const DataCell(Text('Player 4')),
+                    DataCell(Text('${dataTeams.player4}')),
+                  ],
+                ),
+                DataRow(
+                  cells: <DataCell>[
+                    const DataCell(Text('Player 5')),
+                    DataCell(Text('${dataTeams.player5}')),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          const Divider(
+            height: 1,
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          Center(
+            child: Text(
+              'Description',
+              style: blackTextStyle.copyWith(
+                fontSize: 15,
+                fontWeight: medium,
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          const Divider(
+            height: 1,
+          ),
+          const SizedBox(
+            height: 20,
           ),
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 15),

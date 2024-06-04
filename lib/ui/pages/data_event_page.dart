@@ -44,6 +44,8 @@ class _DataEventPageState extends State<DataEventPage> {
         eventsList = tempList;
       });
       EasyLoading.dismiss();
+    } else {
+      EasyLoading.dismiss();
     }
   }
 

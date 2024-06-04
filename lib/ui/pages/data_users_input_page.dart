@@ -55,6 +55,7 @@ class _DataUsersInputPageState extends State<DataUsersInputPage>
   Future<User?> signUpWithEmailAndPassword(
       String name, String email, String phone, String password) async {
     try {
+      EasyLoading.show(status: 'loading...');
       UserCredential userCredential =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
@@ -72,6 +73,7 @@ class _DataUsersInputPageState extends State<DataUsersInputPage>
     } on FirebaseAuthException catch (e) {
       print('Failed with error code: ${e.code}');
       print(e.message);
+      EasyLoading.dismiss();
       return null;
     }
   }
@@ -94,35 +96,43 @@ class _DataUsersInputPageState extends State<DataUsersInputPage>
     if (widget.dataUser != null) {
       String uid = widget.dataUser!.uid!;
 
-      DatabaseReference userRef =
-          FirebaseDatabase.instance.ref().child(USERS).child(uid);
-      DatabaseEvent event = await userRef.once();
+      try {
+        EasyLoading.show(status: 'loading...');
+        DatabaseReference userRef =
+            FirebaseDatabase.instance.ref().child(USERS).child(uid);
+        DatabaseEvent event = await userRef.once();
 
-      if (event.snapshot.value != null) {
-        String currentEmail =
-            (event.snapshot.value as Map<dynamic, dynamic>)['email'];
+        if (event.snapshot.value != null) {
+          String currentEmail =
+              (event.snapshot.value as Map<dynamic, dynamic>)['email'];
 
-        // Masuk kembali dengan email dan password lama pengguna
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: currentEmail,
-          password: PASSWORDDEFAULT,
-        );
+          // Masuk kembali dengan email dan password lama pengguna
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: currentEmail,
+            password: PASSWORDDEFAULT,
+          );
 
-        // Perbarui email pengguna di Firebase Authentication
-        User? user = FirebaseAuth.instance.currentUser;
-        if (user != null) {
-          await user.verifyBeforeUpdateEmail(email);
-          // Perbarui data pengguna di Realtime Database
-          await userRef.update({
-            'name': name,
-            'email': email,
-            'phone': phone,
-            'verified': false,
-          });
-          Navigator.pushNamed(context, '/data-success-update');
-        } else {
-          CustomSnackBar.showToast(context, 'Email sudah terdaftar');
+          // Perbarui email pengguna di Firebase Authentication
+          User? user = FirebaseAuth.instance.currentUser;
+          if (user != null) {
+            await user.verifyBeforeUpdateEmail(email);
+            // Perbarui data pengguna di Realtime Database
+            await userRef.update({
+              'name': name,
+              'email': email,
+              'phone': phone,
+              'verified': false,
+            });
+            Navigator.pushNamed(context, '/data-success-update');
+            EasyLoading.dismiss();
+          } else {
+            CustomSnackBar.showToast(context, 'Email sudah terdaftar');
+            EasyLoading.dismiss();
+          }
         }
+      } catch (e) {
+        print(e);
+        EasyLoading.dismiss();
       }
     }
   }
@@ -179,7 +189,6 @@ class _DataUsersInputPageState extends State<DataUsersInputPage>
                       if (validate()) {
                         // TODO CREATE
                         if (widget.dataUser == null) {
-                          EasyLoading.show(status: 'loading...');
                           User? user = await signUpWithEmailAndPassword(
                             nameController.text,
                             emailController.text,
@@ -189,20 +198,20 @@ class _DataUsersInputPageState extends State<DataUsersInputPage>
 
                           if (user != null) {
                             Navigator.pushNamed(context, '/data-success');
+                            EasyLoading.dismiss();
                           } else {
                             CustomSnackBar.showToast(
                                 context, 'Email sudah terdaftar');
+                            EasyLoading.dismiss();
                           }
-                          EasyLoading.dismiss();
+
                           // TODO UPDATE
                         } else {
-                          EasyLoading.show(status: 'loading...');
                           updateData(
                             nameController.text,
                             emailController.text,
                             phoneController.text,
                           );
-                          EasyLoading.dismiss();
                         }
                       } else {
                         CustomSnackBar.showToast(

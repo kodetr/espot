@@ -33,7 +33,7 @@ class DataUsersItem extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          dataUser.profilePicture != null
+          dataUser.profilePicture != ''
               ? Container(
                   width: 70,
                   height: 70,
