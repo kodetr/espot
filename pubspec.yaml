@@ -1,0 +1,65 @@
+name: espot
+description: "A new Flutter project."
+publish_to: 'none' 
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.4 <4.0.0'
+
+dependencies:
+  another_flushbar: ^1.10.28
+  carousel_slider: ^4.0.0
+  cupertino_icons: ^1.0.2
+  equatable: ^2.0.3
+  firebase_auth_mocks: ^0.13.0
+  firebase_core: ^2.27.0
+  firebase_database: ^10.4.9
+  firebase_storage: ^11.6.9
+  flutter:
+    sdk: flutter
+  get_storage: ^2.1.1
+  image_picker: ^0.8.4+11
+  intl: ^0.18.1
+  url_launcher: ^6.0.20
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/
+
+  
+  
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
