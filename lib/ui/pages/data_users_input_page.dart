@@ -213,6 +213,9 @@ class _DataUsersInputPageState extends State<DataUsersInputPage>
                 ],
               ),
             ),
+            const SizedBox(
+              height: 30,
+            )
           ],
         ));
   }

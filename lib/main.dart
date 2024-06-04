@@ -2,13 +2,14 @@ import 'package:espot/ui/pages/data_event_page.dart';
 import 'package:espot/ui/pages/data_events_input_page.dart';
 import 'package:espot/ui/pages/data_success_delete_page.dart';
 import 'package:espot/ui/pages/data_success_update_page.dart';
+import 'package:espot/ui/pages/data_teams_input_page.dart';
+import 'package:espot/ui/pages/data_teams_page.dart';
 import 'package:espot/ui/pages/profile_edit_password_success_page.dart';
 import 'package:espot/ui/pages/profile_edit_photo_success_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:espot/shared/theme.dart';
 import 'package:espot/ui/pages/data_success_page.dart';
-import 'package:espot/ui/pages/data_users_detail_page.dart';
 import 'package:espot/ui/pages/data_users_page.dart';
 import 'package:espot/ui/pages/home_page.dart';
 import 'package:espot/ui/pages/data_users_input_page.dart';
@@ -66,7 +67,6 @@ class MyApp extends StatelessWidget {
         '/home': (context) => const HomePage(),
         '/users': (context) => const DataUsersPage(),
         '/user-input': (context) => const DataUsersInputPage(),
-        '/user-detail': (context) => const DataUsersDetailPage(),
         '/data-success': (context) => const DataSuccessPage(),
         '/data-success-update': (context) => const DataSuccessUpdatePage(),
         '/data-success-delete': (context) => const DataSuccessDeletePage(),
@@ -78,6 +78,8 @@ class MyApp extends StatelessWidget {
             const ProfileEditPasswordSuccessPage(),
         '/event': (context) => const DataEventPage(),
         '/event-input': (context) => const DataEventInputPage(),
+        '/teams': (context) => const DataTeamsPage(),
+        '/teams-input': (context) => const DataTeamsInputPage()
       },
     );
   }
