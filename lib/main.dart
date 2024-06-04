@@ -1,3 +1,5 @@
+import 'package:espot/ui/pages/data_event_page.dart';
+import 'package:espot/ui/pages/data_events_input_page.dart';
 import 'package:espot/ui/pages/data_success_delete_page.dart';
 import 'package:espot/ui/pages/data_success_update_page.dart';
 import 'package:espot/ui/pages/profile_edit_password_success_page.dart';
@@ -72,6 +74,8 @@ class MyApp extends StatelessWidget {
             const ProfileEditPhotoSuccessPage(),
         '/profile-update-password-success': (context) =>
             const ProfileEditPasswordSuccessPage(),
+        '/event': (context) => const DataEventPage(),
+        '/event-input': (context) => const DataEventInputPage(),
       },
     );
   }

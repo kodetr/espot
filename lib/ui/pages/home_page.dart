@@ -199,7 +199,7 @@ Widget buildServices(BuildContext context) {
               title: 'Teams',
               width: 30,
               onTap: () {
-                Navigator.pushNamed(context, '/users');
+                Navigator.pushNamed(context, '/teams');
               },
             ),
             HomeServiceItem(
@@ -207,7 +207,7 @@ Widget buildServices(BuildContext context) {
               title: 'Event',
               width: 35,
               onTap: () {
-                Navigator.pushNamed(context, '/users');
+                Navigator.pushNamed(context, '/event');
               },
             ),
             HomeServiceItem(
