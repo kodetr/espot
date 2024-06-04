@@ -1,12 +1,10 @@
+import 'package:espot/models/event_model.dart';
 import 'package:espot/shared/constant.dart';
-import 'package:espot/ui/pages/data_users_input_page.dart';
+import 'package:espot/ui/pages/data_events_input_page.dart';
+import 'package:espot/ui/widgets/data_event_item.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:espot/models/user_model.dart';
 import 'package:espot/shared/theme.dart';
-import 'package:espot/ui/widgets/data_users_item.dart';
-import 'package:espot/ui/widgets/forms.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class DataEventPage extends StatefulWidget {
   const DataEventPage({Key? key}) : super(key: key);
@@ -18,73 +16,47 @@ class DataEventPage extends StatefulWidget {
 class _DataEventPageState extends State<DataEventPage> {
   final searchController = TextEditingController(text: '');
 
-  UserModel? selectedUsers;
+  EventModel? selectedEvents;
   String searchResult = '';
-  List<UserModel> usersList = [];
+  List<EventModel> eventsList = [];
 
   @override
   void initState() {
     super.initState();
-    _fetchUsers();
+    _fetchEvents();
   }
 
-  Future<void> _fetchUsers() async {
-    DatabaseReference usersRef = FirebaseDatabase.instance.ref().child('users');
+  Future<void> _fetchEvents() async {
+    DatabaseReference usersRef = FirebaseDatabase.instance.ref().child(EVENTS);
     DatabaseEvent event = await usersRef.once();
 
     if (event.snapshot.value != null) {
-      Map<dynamic, dynamic> usersData =
+      Map<dynamic, dynamic> eventsData =
           event.snapshot.value as Map<dynamic, dynamic>;
-      List<UserModel> tempUsersList = [];
-      usersData.forEach((uid, userData) {
-        tempUsersList.add(UserModel.fromMap(userData, uid));
+      List<EventModel> tempList = [];
+      eventsData.forEach((uid, data) {
+        tempList.add(EventModel.fromMap(data, uid));
       });
 
       setState(() {
-        usersList = tempUsersList;
+        eventsList = tempList;
       });
     }
   }
 
-  Future<void> deleteUser() async {
-    if (selectedUsers != null) {
-      String uid = selectedUsers!.uid!;
+  Future<void> deleteEvents() async {
+    if (selectedEvents != null) {
+      String uid = selectedEvents!.uid!;
       // Dapatkan referensi ke node pengguna berdasarkan UID
-      DatabaseReference userRef =
-          FirebaseDatabase.instance.ref().child(USERS).child(uid);
+      DatabaseReference ref =
+          FirebaseDatabase.instance.ref().child(EVENTS).child(uid);
       // Ambil data pengguna dari Realtime Database
-      DatabaseEvent event = await userRef.once();
+      DatabaseEvent event = await ref.once();
       if (event.snapshot.value != null) {
-        String email = (event.snapshot.value as Map<dynamic, dynamic>)['email'];
-        // Masuk kembali dengan email dan password lama pengguna
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: email,
-          password: PASSWORDDEFAULT,
-        );
-
-        User? user = FirebaseAuth.instance.currentUser;
-        if (user != null) {
-          // Hapus data pengguna dari Realtime Database
-          await userRef.remove();
-          // Hapus pengguna dari Firebase Authentication
-          await user.delete();
-
-          Navigator.pushNamed(context, '/data-success-delete');
-        }
+        // Hapus data pengguna dari Realtime Database
+        await ref.remove();
+        Navigator.pushNamed(context, '/data-success-delete');
       }
-    }
-  }
-
-  Future<void> searchUserByName(String name) async {
-    String searchName = name.toLowerCase();
-
-    List<UserModel> foundUsers =
-        usersList.where((user) => user.name!.contains(searchName)).toList();
-
-    if (foundUsers.isNotEmpty) {
-      setState(() {
-        usersList = foundUsers;
-      });
     }
   }
 
@@ -112,44 +84,19 @@ class _DataEventPageState extends State<DataEventPage> {
         ),
         children: [
           const SizedBox(
-            height: 30,
-          ),
-          Text(
-            'Search',
-            style: blackTextStyle.copyWith(
-              fontSize: 16,
-              fontWeight: semiBold,
-            ),
-          ),
-          const SizedBox(
-            height: 14,
-          ),
-          CustomFormField(
-            title: 'Rido',
-            isShowTitle: false,
-            controller: searchController,
-            onFieldSubmitted: (p0) {
-              if (p0.isEmpty) {
-                _fetchUsers();
-              } else {
-                searchUserByName(p0);
-              }
-            },
-          ),
-          const SizedBox(
             height: 40,
           ),
           Row(
             children: [
               Text(
-                'List Users',
+                'List Events',
                 style: blackTextStyle.copyWith(
                   fontSize: 16,
                   fontWeight: semiBold,
                 ),
               ),
               const Spacer(),
-              selectedUsers != null
+              selectedEvents != null
                   ? Row(
                       children: [
                         GestureDetector(
@@ -158,8 +105,8 @@ class _DataEventPageState extends State<DataEventPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => DataUsersInputPage(
-                                  dataUser: selectedUsers!,
+                                builder: (context) => DataEventInputPage(
+                                  data: selectedEvents!,
                                 ),
                               ),
                             );
@@ -171,7 +118,7 @@ class _DataEventPageState extends State<DataEventPage> {
                         GestureDetector(
                           child: const Icon(Icons.delete),
                           onTapUp: (details) {
-                            deleteUser();
+                            deleteEvents();
                           },
                         ),
                       ],
@@ -182,65 +129,28 @@ class _DataEventPageState extends State<DataEventPage> {
           const SizedBox(
             height: 15,
           ),
-          // FutureBuilder<List<UserModel>>(
-          //     future: getAllUsers(''),
-          //     builder: (context, snapshot) {
-          //       if (snapshot.connectionState == ConnectionState.waiting) {
-          //         return const Center(child: CircularProgressIndicator());
-          //       } else if (snapshot.hasError) {
-          //         print(snapshot.error);
-          //         return Center(child: Text('Error: ${snapshot.error}'));
-          //       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          //         return const Center(child: Text('No users available'));
-          //       } else {
-          //         List<UserModel> users = snapshot.data!;
-          //         return ListView.builder(
-          //           physics: const NeverScrollableScrollPhysics(),
-          //           shrinkWrap: true,
-          //           itemCount: users.length,
-          //           itemBuilder: (context, index) {
-          //             UserModel? dataUsers = users[index];
-          //             return GestureDetector(
-          //               onTap: () {
-          //                 setState(() {
-          //                   selectedUsers = dataUsers;
-          //                   print(selectedUsers!.uid);
-          //                 });
-          //               },
-          //               child: DataUsersItem(
-          //                 dataUser: dataUsers,
-          //                 isSelected: selectedUsers != null
-          //                     ? selectedUsers!.uid == dataUsers.uid
-          //                     : false,
-          //               ),
-          //             );
-          //           },
-          //         );
-          //       }
-          //     }),
           ListView.builder(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
-            itemCount: usersList.length,
+            itemCount: eventsList.length,
             itemBuilder: (context, index) {
-              UserModel? dataUsers = usersList[index];
+              EventModel? dataEvents = eventsList[index];
               return GestureDetector(
                 onTap: () {
                   setState(() {
-                    selectedUsers = dataUsers;
-                    print(selectedUsers!.uid);
+                    selectedEvents = dataEvents;
+                    print(selectedEvents!.uid);
                   });
                 },
-                child: DataUsersItem(
-                  dataUser: dataUsers,
-                  isSelected: selectedUsers != null
-                      ? selectedUsers!.uid == dataUsers.uid
+                child: DataEventItem(
+                  dataEvent: dataEvents,
+                  isSelected: selectedEvents != null
+                      ? selectedEvents!.uid == dataEvents.uid
                       : false,
                 ),
               );
             },
           ),
-
           const SizedBox(
             height: 10,
           ),

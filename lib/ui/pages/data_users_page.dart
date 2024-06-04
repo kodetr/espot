@@ -29,7 +29,7 @@ class _DataUsersPageState extends State<DataUsersPage> {
   }
 
   Future<void> _fetchUsers() async {
-    DatabaseReference usersRef = FirebaseDatabase.instance.ref().child('users');
+    DatabaseReference usersRef = FirebaseDatabase.instance.ref().child(USERS);
     DatabaseEvent event = await usersRef.once();
 
     if (event.snapshot.value != null) {

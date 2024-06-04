@@ -13,6 +13,7 @@ import 'package:espot/ui/widgets/forms.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
 
 class DataEventInputPage extends StatefulWidget {
   final EventModel? data;
@@ -28,8 +29,27 @@ class DataEventInputPage extends StatefulWidget {
 class _DataEventInputPageState extends State<DataEventInputPage>
     with CacheManager {
   final descController = TextEditingController(text: '');
+
   XFile? selectedImage;
   final FirebaseStorage _storage = FirebaseStorage.instance;
+
+  // Future<void> addEvent(String uid, String desc, String img) {
+  //   DatabaseReference ref =
+  //       FirebaseDatabase.instance.ref().child(EVENTS).child(uid);
+  //   return ref.set({
+  //     'desc': desc,
+  //     'image': img,
+  //   }).then((value) {
+  //     Navigator.pushNamed(context, '/data-success');
+  //     print("Event Added");
+  //   }).catchError((error) => print("Failed to add Event: $error"));
+  // }
+
+  @override
+  void initState() {
+    super.initState();
+    getLoadUpdate();
+  }
 
   bool validate() {
     if (descController.text.isEmpty) {
@@ -38,42 +58,9 @@ class _DataEventInputPageState extends State<DataEventInputPage>
     return true;
   }
 
-  Future<void> addEvent(String uid, String date, String desc, String img) {
-    DatabaseReference ref =
-        FirebaseDatabase.instance.ref().child(EVENTS).child(uid);
-    return ref.set({
-      'desc': desc,
-      'image': img,
-    }).then((value) {
-      Navigator.pushNamed(context, '/data-success');
-      print("Event Added");
-    }).catchError((error) => print("Failed to add Event: $error"));
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    getLoadUpdate();
-  }
-
   void getLoadUpdate() {
     if (widget.data != null) {
       descController.text = widget.data!.desc!;
-    }
-  }
-
-  Future<void> updateData(String desc, String image) async {
-    if (widget.data != null) {
-      String uid = widget.data!.uid!;
-
-      DatabaseReference userRef =
-          FirebaseDatabase.instance.ref().child(EVENTS).child(uid);
-      await userRef.once();
-      await userRef.update({
-        'desc': desc,
-        'image': image,
-      });
-      Navigator.pushNamed(context, '/data-success-update');
     }
   }
 
@@ -89,7 +76,36 @@ class _DataEventInputPageState extends State<DataEventInputPage>
     }
   }
 
-  Future<void> _uploadImage() async {
+  Future<void> updateData(String desc) async {
+    if (selectedImage == null) return;
+    if (widget.data != null) {
+      try {
+        String uid = widget.data!.uid!;
+        String fileName =
+            'uploads/${DateTime.now().millisecondsSinceEpoch}.png';
+        File file = File(selectedImage!.path);
+        UploadTask uploadTask = _storage.ref().child(fileName).putFile(file);
+
+        TaskSnapshot taskSnapshot = await uploadTask;
+        String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+
+        DatabaseReference userRef =
+            FirebaseDatabase.instance.ref().child(EVENTS).child(uid);
+        await userRef.once();
+        await userRef.update({
+          'desc': desc,
+          'image': downloadUrl,
+        });
+        Navigator.pushNamed(context, '/data-success-update');
+      } catch (e) {
+        print('Error: $e');
+
+        CustomSnackBar.showToast(context, 'Failed to upload image');
+      }
+    }
+  }
+
+  Future<void> _addEvent(String desc) async {
     if (selectedImage == null) return;
 
     try {
@@ -100,8 +116,21 @@ class _DataEventInputPageState extends State<DataEventInputPage>
       TaskSnapshot taskSnapshot = await uploadTask;
       String downloadUrl = await taskSnapshot.ref.getDownloadURL();
 
+      const Uuid uuid = Uuid();
+      String uid = uuid.v4();
+
       // updateDataPhoto(downloadUrl);
       print(downloadUrl);
+
+      DatabaseReference ref =
+          FirebaseDatabase.instance.ref().child(EVENTS).child(uid);
+      return ref.set({
+        'desc': desc,
+        'image': downloadUrl,
+      }).then((value) {
+        Navigator.pushNamed(context, '/data-success');
+        print("Event Added");
+      }).catchError((error) => print("Failed to add Event: $error"));
     } catch (e) {
       print('Error: $e');
 
@@ -154,36 +183,37 @@ class _DataEventInputPageState extends State<DataEventInputPage>
                       selectImage();
                     },
                     child: Container(
-                      width: 500,
-                      height: 180,
-                      decoration: BoxDecoration(
-                        color: lightBackgroundColor,
-                        image: selectedImage == null
-                            ? null
-                            : DecorationImage(
-                                fit: BoxFit.fill,
-                                image: FileImage(
-                                  File(
-                                    selectedImage!.path,
+                        width: 500,
+                        height: 180,
+                        decoration: BoxDecoration(
+                          color: lightBackgroundColor,
+                          borderRadius: BorderRadius.circular(20),
+                          image: selectedImage == null
+                              ? null
+                              : DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image: FileImage(
+                                    File(
+                                      selectedImage!.path,
+                                    ),
                                   ),
                                 ),
-                              ),
-                      ),
-                      child: selectedImage != null
-                          ? null
-                          : Center(
-                              child: Image.asset(
-                                'assets/ic_upload.png',
-                                width: 32,
-                              ),
-                            ),
-                    ),
+                        ),
+                        child: selectedImage != null
+                            ? null
+                            : Center(
+                                child: Image.asset(
+                                  'assets/ic_upload.png',
+                                  width: 32,
+                                ),
+                              )),
                   ),
                   const SizedBox(
                     height: 16,
                   ),
                   CustomFormField(
                     title: 'Description',
+                    maxLine: 5,
                     controller: descController,
                   ),
                   const SizedBox(
@@ -198,13 +228,10 @@ class _DataEventInputPageState extends State<DataEventInputPage>
                       if (validate()) {
                         // TODO CREATE
                         if (widget.data == null) {
-                          // addEvent();
-
+                          _addEvent(descController.text);
                           // TODO UPDATE
                         } else {
-                          // updateData(
-                          //   descController.text,
-                          // );
+                          updateData(descController.text);
                         }
                       } else {
                         CustomSnackBar.showToast(
