@@ -107,6 +107,13 @@ class _DataEventPageState extends State<DataEventPage> {
                   ? Row(
                       children: [
                         GestureDetector(
+                          child: const Icon(Icons.remove_red_eye),
+                          onTapUp: (details) {},
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        GestureDetector(
                           child: const Icon(Icons.edit),
                           onTapUp: (details) {
                             Navigator.push(

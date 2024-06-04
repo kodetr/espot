@@ -162,6 +162,13 @@ class _DataUsersPageState extends State<DataUsersPage> {
                   ? Row(
                       children: [
                         GestureDetector(
+                          child: const Icon(Icons.remove_red_eye),
+                          onTapUp: (details) {},
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        GestureDetector(
                           child: const Icon(Icons.edit),
                           onTapUp: (details) {
                             Navigator.push(
@@ -191,42 +198,6 @@ class _DataUsersPageState extends State<DataUsersPage> {
           const SizedBox(
             height: 15,
           ),
-          // FutureBuilder<List<UserModel>>(
-          //     future: getAllUsers(''),
-          //     builder: (context, snapshot) {
-          //       if (snapshot.connectionState == ConnectionState.waiting) {
-          //         return const Center(child: CircularProgressIndicator());
-          //       } else if (snapshot.hasError) {
-          //         print(snapshot.error);
-          //         return Center(child: Text('Error: ${snapshot.error}'));
-          //       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          //         return const Center(child: Text('No users available'));
-          //       } else {
-          //         List<UserModel> users = snapshot.data!;
-          //         return ListView.builder(
-          //           physics: const NeverScrollableScrollPhysics(),
-          //           shrinkWrap: true,
-          //           itemCount: users.length,
-          //           itemBuilder: (context, index) {
-          //             UserModel? dataUsers = users[index];
-          //             return GestureDetector(
-          //               onTap: () {
-          //                 setState(() {
-          //                   selectedUsers = dataUsers;
-          //                   print(selectedUsers!.uid);
-          //                 });
-          //               },
-          //               child: DataUsersItem(
-          //                 dataUser: dataUsers,
-          //                 isSelected: selectedUsers != null
-          //                     ? selectedUsers!.uid == dataUsers.uid
-          //                     : false,
-          //               ),
-          //             );
-          //           },
-          //         );
-          //       }
-          //     }),
           ListView.builder(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
@@ -249,7 +220,6 @@ class _DataUsersPageState extends State<DataUsersPage> {
               );
             },
           ),
-
           const SizedBox(
             height: 10,
           ),
