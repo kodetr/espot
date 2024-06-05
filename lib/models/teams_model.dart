@@ -9,6 +9,7 @@ class TeamsModel {
   String? player4;
   String? player5;
   String? image;
+  int? verified;
 
   TeamsModel({
     this.uid,
@@ -19,6 +20,7 @@ class TeamsModel {
     this.player4,
     this.player5,
     this.image,
+    this.verified,
   });
 
   factory TeamsModel.fromMap(Map<dynamic, dynamic> data, String uid) {
@@ -31,6 +33,7 @@ class TeamsModel {
       player4: data['player4'] as String?,
       player5: data['player5'] as String?,
       image: data['image'] as String?,
+      verified: data['verified'] as int?,
     );
   }
 }

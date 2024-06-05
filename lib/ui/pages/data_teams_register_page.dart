@@ -2,20 +2,21 @@ import 'package:espot/models/teams_model.dart';
 import 'package:espot/shared/cache_manager.dart';
 import 'package:espot/shared/constant.dart';
 import 'package:espot/ui/pages/data_teams_input_page.dart';
+import 'package:espot/ui/pages/data_teams_register_input_page.dart';
 import 'package:espot/ui/widgets/data_teams_item.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:espot/shared/theme.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-class DataTeamsPage extends StatefulWidget with CacheManager {
-  const DataTeamsPage({Key? key}) : super(key: key);
+class DataTeamsRegisterPage extends StatefulWidget with CacheManager {
+  const DataTeamsRegisterPage({Key? key}) : super(key: key);
 
   @override
-  State<DataTeamsPage> createState() => _DataTeamsPageState();
+  State<DataTeamsRegisterPage> createState() => _DataTeamsRegisterPageState();
 }
 
-class _DataTeamsPageState extends State<DataTeamsPage> {
+class _DataTeamsRegisterPageState extends State<DataTeamsRegisterPage> {
   final searchController = TextEditingController(text: '');
 
   TeamsModel? selectedTeams;
@@ -76,15 +77,13 @@ class _DataTeamsPageState extends State<DataTeamsPage> {
           'Teams',
         ),
         actions: [
-          widget.getName() == 'Admin'
-              ? IconButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/teams-input');
-                  },
-                  icon: const Icon(Icons.add),
-                  iconSize: 30,
-                )
-              : Container(),
+          IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/teams-register-input');
+            },
+            icon: const Icon(Icons.add),
+            iconSize: 30,
+          )
         ],
       ),
       body: ListView(
@@ -94,17 +93,17 @@ class _DataTeamsPageState extends State<DataTeamsPage> {
         ),
         children: [
           const SizedBox(
-            height: 40,
+            height: 30,
           ),
           Row(
             children: [
-              Text(
-                'List Teams',
-                style: blackTextStyle.copyWith(
-                  fontSize: 16,
-                  fontWeight: semiBold,
-                ),
-              ),
+              // Text(
+              //   'Teams',
+              //   style: blackTextStyle.copyWith(
+              //     fontSize: 16,
+              //     fontWeight: semiBold,
+              //   ),
+              // ),
               const Spacer(),
               selectedTeams != null
                   ? Row(
@@ -123,7 +122,8 @@ class _DataTeamsPageState extends State<DataTeamsPage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => DataTeamsInputPage(
+                                      builder: (context) =>
+                                          DataTeamsRegisterInputPage(
                                         data: selectedTeams!,
                                       ),
                                     ),
@@ -131,6 +131,7 @@ class _DataTeamsPageState extends State<DataTeamsPage> {
                                 },
                               )
                             : Container(),
+
                         const SizedBox(
                           width: 20,
                         ),
@@ -143,7 +144,7 @@ class _DataTeamsPageState extends State<DataTeamsPage> {
                                   EasyLoading.dismiss();
                                 },
                               )
-                            : Container()
+                            : Container(),
                       ],
                     )
                   : Container()
@@ -159,18 +160,19 @@ class _DataTeamsPageState extends State<DataTeamsPage> {
             itemBuilder: (context, index) {
               TeamsModel? dataTeams = teamsList[index];
               return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectedTeams = dataTeams;
-                      print(selectedTeams!.uid);
-                    });
-                  },
-                  child: DataTeamsItem(
-                    dataTeams: dataTeams,
-                    isSelected: selectedTeams != null
-                        ? selectedTeams!.uid == dataTeams.uid
-                        : false,
-                  ));
+                onTap: () {
+                  setState(() {
+                    selectedTeams = dataTeams;
+                    print(selectedTeams!.uid);
+                  });
+                },
+                child: DataTeamsItem(
+                  dataTeams: dataTeams,
+                  isSelected: selectedTeams != null
+                      ? selectedTeams!.uid == dataTeams.uid
+                      : false,
+                ),
+              );
             },
           ),
           const SizedBox(

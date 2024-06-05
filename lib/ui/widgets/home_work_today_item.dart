@@ -4,10 +4,12 @@ import 'package:espot/shared/theme.dart';
 
 class HomeWorkTodayItem extends StatelessWidget {
   // final WorkTodayModel worktoday;
-  final int? id;
+  final String? id;
   final String? name;
   final int? progress;
   final String? thumbnail;
+  final VoidCallback? onTapAprove;
+  final VoidCallback? onTapReject;
 
   const HomeWorkTodayItem({
     Key? key,
@@ -16,6 +18,8 @@ class HomeWorkTodayItem extends StatelessWidget {
     this.name,
     this.progress,
     this.thumbnail,
+    this.onTapAprove,
+    this.onTapReject,
   }) : super(key: key);
 
   @override
@@ -60,11 +64,17 @@ class HomeWorkTodayItem extends StatelessWidget {
                   //     fontWeight: semiBold,
                   //   ),
                   // ),
-                  Image.asset('assets/ic_close.png', cacheWidth: 30),
+                  GestureDetector(
+                    onTap: onTapReject,
+                    child: Image.asset('assets/ic_close.png', cacheWidth: 30),
+                  ),
                   const SizedBox(
                     width: 10,
                   ),
-                  Image.asset('assets/ic_check.png', cacheWidth: 30),
+                  GestureDetector(
+                    onTap: onTapAprove,
+                    child: Image.asset('assets/ic_check.png', cacheWidth: 30),
+                  ),
                 ],
               ),
               const SizedBox(

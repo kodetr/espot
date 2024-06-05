@@ -14,18 +14,19 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 
-class DataTeamsInputPage extends StatefulWidget {
+class DataTeamsRegisterInputPage extends StatefulWidget {
   final TeamsModel? data;
-  const DataTeamsInputPage({
+  const DataTeamsRegisterInputPage({
     this.data,
     Key? key,
   }) : super(key: key);
 
   @override
-  State<DataTeamsInputPage> createState() => _DataTeamsInputPageState();
+  State<DataTeamsRegisterInputPage> createState() =>
+      _DataTeamsRegisterInputPageState();
 }
 
-class _DataTeamsInputPageState extends State<DataTeamsInputPage>
+class _DataTeamsRegisterInputPageState extends State<DataTeamsRegisterInputPage>
     with CacheManager {
   final descController = TextEditingController(text: '');
   final player1Controller = TextEditingController(text: '');
@@ -175,7 +176,7 @@ class _DataTeamsInputPageState extends State<DataTeamsInputPage>
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            widget.data != null ? 'Update Teams' : 'Input Teams',
+            widget.data != null ? 'Update Teams' : 'Register Teams',
           ),
         ),
         body: ListView(

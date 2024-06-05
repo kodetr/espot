@@ -1,8 +1,15 @@
+import 'package:espot/models/event_model.dart';
+import 'package:espot/models/teams_model.dart';
 import 'package:espot/shared/cache_manager.dart';
+import 'package:espot/shared/constant.dart';
 import 'package:espot/shared/theme.dart';
+import 'package:espot/ui/widgets/data_event_item.dart';
+import 'package:espot/ui/widgets/data_teams_item.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:espot/ui/widgets/home_service_item.dart';
 import 'package:espot/ui/widgets/home_work_today_item.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class HomePage extends StatefulWidget with CacheManager {
   const HomePage({Key? key}) : super(key: key);
@@ -12,10 +19,59 @@ class HomePage extends StatefulWidget with CacheManager {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<TeamsModel> teamsList = [];
+  List<EventModel> eventsList = [];
+
   @override
   void initState() {
     print(widget.getName());
+    _fetchEvents();
+    _fetchTeams();
     super.initState();
+  }
+
+  Future<void> _fetchTeams() async {
+    EasyLoading.show(status: 'loading...');
+    DatabaseReference usersRef = FirebaseDatabase.instance.ref().child(TEAMS);
+    DatabaseEvent event = await usersRef.once();
+
+    if (event.snapshot.value != null) {
+      Map<dynamic, dynamic> eventsData =
+          event.snapshot.value as Map<dynamic, dynamic>;
+      List<TeamsModel> tempList = [];
+      eventsData.forEach((uid, data) {
+        tempList.add(TeamsModel.fromMap(data, uid));
+      });
+
+      setState(() {
+        teamsList = tempList;
+      });
+      EasyLoading.dismiss();
+    } else {
+      EasyLoading.dismiss();
+    }
+  }
+
+  Future<void> _fetchEvents() async {
+    EasyLoading.show(status: 'loading...');
+    DatabaseReference usersRef = FirebaseDatabase.instance.ref().child(EVENTS);
+    DatabaseEvent event = await usersRef.once();
+
+    if (event.snapshot.value != null) {
+      Map<dynamic, dynamic> eventsData =
+          event.snapshot.value as Map<dynamic, dynamic>;
+      List<EventModel> tempList = [];
+      eventsData.forEach((uid, data) {
+        tempList.add(EventModel.fromMap(data, uid));
+      });
+
+      setState(() {
+        eventsList = tempList;
+      });
+      EasyLoading.dismiss();
+    } else {
+      EasyLoading.dismiss();
+    }
   }
 
   @override
@@ -98,7 +154,11 @@ class _HomePageState extends State<HomePage> {
           ),
           // buildUsers(),
           buildServices(context, widget.getName()!),
-          buildWorkToday(),
+          buildWorkToday(
+            widget.getName()!,
+            eventsList,
+            teamsList,
+          ),
           const SizedBox(
             height: 70,
           ),
@@ -225,7 +285,7 @@ Widget buildServices(BuildContext context, String role) {
                     title: 'Registration',
                     width: 35,
                     onTap: () {
-                      Navigator.pushNamed(context, '/event');
+                      Navigator.pushNamed(context, '/teams-register-input');
                     },
                   )
                 : Container(),
@@ -248,7 +308,10 @@ Widget buildServices(BuildContext context, String role) {
   );
 }
 
-Widget buildWorkToday() {
+Widget buildWorkToday(
+    String role, List<EventModel> eventsList, List<TeamsModel> teamsList) {
+  TeamsModel? selectedTeams;
+
   return Container(
     margin: const EdgeInsets.only(
       top: 30,
@@ -257,54 +320,64 @@ Widget buildWorkToday() {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Confirmation',
+          role == 'Admin' ? 'Confirmation' : 'Event',
           style: blackTextStyle.copyWith(
             fontSize: 16,
             fontWeight: semiBold,
           ),
         ),
-        Container(
-          padding: const EdgeInsets.all(22),
-          margin: const EdgeInsets.only(
-            top: 14,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: whiteColor,
-          ),
-          child: const Column(
-            children: [
-              HomeWorkTodayItem(
-                id: 1,
-                name: 'Elsa',
-                progress: 10,
-                thumbnail:
-                    'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fHww',
+        role == 'Admin'
+            ? Container(
+                padding: const EdgeInsets.all(22),
+                margin: const EdgeInsets.only(
+                  top: 14,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: whiteColor,
+                ),
+                child: ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: teamsList.length,
+                  itemBuilder: (context, index) {
+                    TeamsModel? dataTeams = teamsList[index];
+                    return HomeWorkTodayItem(
+                      id: dataTeams.uid,
+                      name: dataTeams.desc,
+                      onTapAprove: () {},
+                      onTapReject: () {},
+                      thumbnail:
+                          'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fHww',
+                    );
+                  },
+                ),
+
+                // Column(
+                //   children: [
+                //     HomeWorkTodayItem(
+                //       id: 1,
+                //       name: 'Elsa',
+                //       onTapAprove: () {},
+                //       onTapReject: () {},
+                //       thumbnail:
+                //           'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fHww',
+                //     ),
+
+                //   ],
+                // ),
+              )
+            : ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: eventsList.length,
+                itemBuilder: (context, index) {
+                  EventModel? dataEvents = eventsList[index];
+                  return DataEventItem(
+                    dataEvent: dataEvents,
+                  );
+                },
               ),
-              HomeWorkTodayItem(
-                id: 2,
-                name: 'Agus',
-                progress: 50,
-                thumbnail:
-                    'https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?cs=srgb&dl=pexels-simon-robben-614810.jpg&fm=jpg',
-              ),
-              HomeWorkTodayItem(
-                id: 3,
-                name: 'Agus',
-                progress: 80,
-                thumbnail:
-                    'https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?cs=srgb&dl=pexels-simon-robben-614810.jpg&fm=jpg',
-              ),
-              HomeWorkTodayItem(
-                id: 4,
-                name: 'Elsa',
-                progress: 10,
-                thumbnail:
-                    'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fHww',
-              ),
-            ],
-          ),
-        ),
       ],
     ),
   );

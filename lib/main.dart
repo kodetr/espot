@@ -4,6 +4,8 @@ import 'package:espot/ui/pages/data_success_delete_page.dart';
 import 'package:espot/ui/pages/data_success_update_page.dart';
 import 'package:espot/ui/pages/data_teams_input_page.dart';
 import 'package:espot/ui/pages/data_teams_page.dart';
+import 'package:espot/ui/pages/data_teams_register_input_page.dart';
+import 'package:espot/ui/pages/data_teams_register_page.dart';
 import 'package:espot/ui/pages/profile_edit_password_success_page.dart';
 import 'package:espot/ui/pages/profile_edit_photo_success_page.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -79,7 +81,9 @@ class MyApp extends StatelessWidget {
         '/event': (context) => const DataEventPage(),
         '/event-input': (context) => const DataEventInputPage(),
         '/teams': (context) => const DataTeamsPage(),
-        '/teams-input': (context) => const DataTeamsInputPage()
+        '/teams-input': (context) => const DataTeamsInputPage(),
+        '/teams-register': (context) => const DataTeamsRegisterPage(),
+        '/teams-register-input': (context) => const DataTeamsRegisterInputPage()
       },
     );
   }

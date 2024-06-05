@@ -44,10 +44,16 @@ mixin CacheManager {
     return box.read(CacheManagerKey.PHOTO.toString()) ?? '';
   }
 
-  // String? getToken() {
-  //   final box = GetStorage();
-  //   return box.read(CacheManagerKey.TOKEN.toString());
-  // }
+  int? getVerified() {
+    final box = GetStorage();
+    return box.read(CacheManagerKey.VERIFIED.toString()) ?? 0;
+  }
+
+  Future<bool> saveVerified(int? verified) async {
+    final box = GetStorage();
+    await box.write(CacheManagerKey.VERIFIED.toString(), verified);
+    return true;
+  }
 
   Future<void> removeAll() async {
     final box = GetStorage();
@@ -56,8 +62,9 @@ mixin CacheManager {
     await box.remove(CacheManagerKey.PHONE.toString());
     await box.remove(CacheManagerKey.EMAIL.toString());
     await box.remove(CacheManagerKey.PHOTO.toString());
+    await box.remove(CacheManagerKey.VERIFIED.toString());
   }
 }
 
 // ignore: constant_identifier_names
-enum CacheManagerKey { ID, NAME, PHONE, EMAIL, PHOTO }
+enum CacheManagerKey { ID, NAME, PHONE, EMAIL, PHOTO, VERIFIED }
