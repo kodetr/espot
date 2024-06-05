@@ -25,11 +25,15 @@ class HomeWorkTodayItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           width: 45,
           height: 45,
-          margin: const EdgeInsets.only(bottom: 20, top: 10),
+          margin: const EdgeInsets.only(
+            bottom: 20,
+          ),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             image: DecorationImage(
@@ -44,26 +48,25 @@ class HomeWorkTodayItem extends StatelessWidget {
         ),
         Expanded(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    name!,
-                    style: blackTextStyle.copyWith(
-                      fontSize: 16,
-                      fontWeight: medium,
+                  SizedBox(
+                    width: 170,
+                    child: Text(
+                      overflow: TextOverflow.ellipsis,
+                      name!,
+                      style: blackTextStyle.copyWith(
+                        fontSize: 16,
+                        fontWeight: medium,
+                      ),
                     ),
                   ),
                   const Spacer(),
-                  // Text(
-                  //   '$progress% ',
-                  //   style: greenTextStyle.copyWith(
-                  //     fontWeight: semiBold,
-                  //   ),
-                  // ),
                   GestureDetector(
                     onTap: onTapReject,
                     child: Image.asset('assets/ic_close.png', cacheWidth: 30),
@@ -74,6 +77,9 @@ class HomeWorkTodayItem extends StatelessWidget {
                   GestureDetector(
                     onTap: onTapAprove,
                     child: Image.asset('assets/ic_check.png', cacheWidth: 30),
+                  ),
+                  const SizedBox(
+                    width: 5,
                   ),
                 ],
               ),

@@ -2,6 +2,7 @@ import 'package:espot/models/event_model.dart';
 import 'package:espot/models/teams_model.dart';
 import 'package:espot/shared/cache_manager.dart';
 import 'package:espot/shared/constant.dart';
+import 'package:espot/shared/snackbar.dart';
 import 'package:espot/shared/theme.dart';
 import 'package:espot/ui/widgets/data_event_item.dart';
 import 'package:espot/ui/widgets/data_teams_item.dart';
@@ -155,6 +156,7 @@ class _HomePageState extends State<HomePage> {
           // buildUsers(),
           buildServices(context, widget.getName()!),
           buildWorkToday(
+            context,
             widget.getName()!,
             eventsList,
             teamsList,
@@ -308,8 +310,8 @@ Widget buildServices(BuildContext context, String role) {
   );
 }
 
-Widget buildWorkToday(
-    String role, List<EventModel> eventsList, List<TeamsModel> teamsList) {
+Widget buildWorkToday(BuildContext context, String role,
+    List<EventModel> eventsList, List<TeamsModel> teamsList) {
   TeamsModel? selectedTeams;
 
   return Container(
@@ -328,7 +330,7 @@ Widget buildWorkToday(
         ),
         role == 'Admin'
             ? Container(
-                padding: const EdgeInsets.all(22),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
                 margin: const EdgeInsets.only(
                   top: 14,
                 ),
@@ -340,32 +342,64 @@ Widget buildWorkToday(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: teamsList.length,
-                  itemBuilder: (context, index) {
+                  itemBuilder: (contextx, index) {
                     TeamsModel? dataTeams = teamsList[index];
-                    return HomeWorkTodayItem(
-                      id: dataTeams.uid,
-                      name: dataTeams.desc,
-                      onTapAprove: () {},
-                      onTapReject: () {},
-                      thumbnail:
-                          'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fHww',
-                    );
+                    return dataTeams.verified == 0
+                        ? HomeWorkTodayItem(
+                            id: dataTeams.uid,
+                            name: dataTeams.desc,
+                            onTapAprove: () async {
+                              try {
+                                EasyLoading.show(status: 'loading...');
+                                String uid = dataTeams.uid!;
+
+                                DatabaseReference userRef = FirebaseDatabase
+                                    .instance
+                                    .ref()
+                                    .child(TEAMS)
+                                    .child(uid);
+                                await userRef.once();
+                                await userRef.update({
+                                  'verified': 1,
+                                });
+                                EasyLoading.dismiss();
+                              } catch (e) {
+                                print('Error: $e');
+                                EasyLoading.dismiss();
+                                CustomSnackBar.showToast(
+                                    context, 'Successfully Approved');
+                              }
+                            },
+                            onTapReject: () async {
+                              try {
+                                EasyLoading.show(status: 'loading...');
+                                String uid = dataTeams.uid!;
+
+                                DatabaseReference userRef = FirebaseDatabase
+                                    .instance
+                                    .ref()
+                                    .child(TEAMS)
+                                    .child(uid);
+                                await userRef.once();
+                                await userRef.update({
+                                  'verified': 2,
+                                });
+                                EasyLoading.dismiss();
+                                CustomSnackBar.showToast(
+                                    context, 'Successfully Reject');
+                              } catch (e) {
+                                print('Error: $e');
+                                EasyLoading.dismiss();
+                              }
+                            },
+                            thumbnail: dataTeams.image,
+                          )
+                        : Container(
+                            margin: const EdgeInsets.only(bottom: 20),
+                            child: const Center(child: Text('Data is missing')),
+                          );
                   },
                 ),
-
-                // Column(
-                //   children: [
-                //     HomeWorkTodayItem(
-                //       id: 1,
-                //       name: 'Elsa',
-                //       onTapAprove: () {},
-                //       onTapReject: () {},
-                //       thumbnail:
-                //           'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fHww',
-                //     ),
-
-                //   ],
-                // ),
               )
             : ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
