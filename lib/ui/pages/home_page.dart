@@ -13,6 +13,12 @@ class HomePage extends StatefulWidget with CacheManager {
 
 class _HomePageState extends State<HomePage> {
   @override
+  void initState() {
+    print(widget.getName());
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       // bottomNavigationBar: BottomAppBar(
@@ -79,6 +85,7 @@ class _HomePageState extends State<HomePage> {
       //     width: 24,
       //   ),
       // ),
+
       // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       body: ListView(
         padding: const EdgeInsets.symmetric(
@@ -90,7 +97,7 @@ class _HomePageState extends State<HomePage> {
             height: 50,
           ),
           // buildUsers(),
-          buildServices(context),
+          buildServices(context, widget.getName()!),
           buildWorkToday(),
           const SizedBox(
             height: 70,
@@ -166,7 +173,7 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-Widget buildServices(BuildContext context) {
+Widget buildServices(BuildContext context, String role) {
   return Container(
     margin: const EdgeInsets.only(
       top: 0,
@@ -187,13 +194,15 @@ Widget buildServices(BuildContext context) {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            HomeServiceItem(
-              iconUrl: 'assets/ic_user.png',
-              title: 'Users',
-              onTap: () {
-                Navigator.pushNamed(context, '/users');
-              },
-            ),
+            role == 'Admin'
+                ? HomeServiceItem(
+                    iconUrl: 'assets/ic_user.png',
+                    title: 'Users',
+                    onTap: () {
+                      Navigator.pushNamed(context, '/users');
+                    },
+                  )
+                : Container(),
             HomeServiceItem(
               iconUrl: 'assets/ic_teams.png',
               title: 'Teams',
@@ -210,16 +219,28 @@ Widget buildServices(BuildContext context) {
                 Navigator.pushNamed(context, '/event');
               },
             ),
-            HomeServiceItem(
-              iconUrl: 'assets/ic_more.png',
-              title: 'More',
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => const MoreDialog(),
-                );
-              },
-            ),
+            role != 'Admin'
+                ? HomeServiceItem(
+                    iconUrl: 'assets/registration.png',
+                    title: 'Registration',
+                    width: 35,
+                    onTap: () {
+                      Navigator.pushNamed(context, '/event');
+                    },
+                  )
+                : Container(),
+            role == 'Admin'
+                ? HomeServiceItem(
+                    iconUrl: 'assets/ic_more.png',
+                    title: 'More',
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => const MoreDialog(),
+                      );
+                    },
+                  )
+                : Container(),
           ],
         ),
       ],

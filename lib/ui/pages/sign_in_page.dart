@@ -119,7 +119,6 @@ class _SignInPageState extends State<SignInPage> with CacheManager {
                       emailController.text, passwordController.text);
 
                   if (user != null) {
-                    Navigator.pushNamed(context, '/home');
                     try {
                       String uid = user.uid;
                       DatabaseReference usersRef = FirebaseDatabase.instance
@@ -132,17 +131,23 @@ class _SignInPageState extends State<SignInPage> with CacheManager {
                           Map<dynamic, dynamic> userData =
                               event.snapshot.value as Map<dynamic, dynamic>;
 
-                          UserModel user = UserModel.fromMap(userData, uid);
-                          saveUser(user);
+                          setState(() {
+                            UserModel user = UserModel.fromMap(userData, uid);
+                            saveUser(user);
+                          });
+                          EasyLoading.dismiss();
                         }
                       });
                     } catch (e) {
                       print(e);
                     }
+                    setState(() {});
+                    Navigator.pushNamed(context, '/home');
+                    EasyLoading.dismiss();
                   } else {
                     CustomSnackBar.showToast(context, 'Login Gagal!');
+                    EasyLoading.dismiss();
                   }
-                  EasyLoading.dismiss();
                 },
               ),
             ],

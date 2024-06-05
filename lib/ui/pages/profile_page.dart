@@ -121,9 +121,9 @@ class ProfilePage extends StatelessWidget with CacheManager {
                                 builder: (context) => ProfileEditPage(
                                   data: UserModel(
                                     uid: "1",
-                                    name: 'Tanwir',
-                                    phone: '08788',
-                                    password: '123',
+                                    name: '',
+                                    phone: '',
+                                    password: '',
                                     profilePicture: '',
                                   ),
                                 ),
@@ -154,8 +154,8 @@ class ProfilePage extends StatelessWidget with CacheManager {
                   ProfileMenuItem(
                     iconUrl: 'assets/ic_logout.png',
                     title: 'Log Out',
-                    onTap: () {
-                      removeAll();
+                    onTap: () async {
+                      await removeAll();
                       Navigator.pushNamed(context, '/sign-in');
                     },
                   ),

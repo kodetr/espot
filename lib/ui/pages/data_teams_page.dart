@@ -1,4 +1,5 @@
 import 'package:espot/models/teams_model.dart';
+import 'package:espot/shared/cache_manager.dart';
 import 'package:espot/shared/constant.dart';
 import 'package:espot/ui/pages/data_teams_input_page.dart';
 import 'package:espot/ui/widgets/data_teams_item.dart';
@@ -7,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:espot/shared/theme.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-class DataTeamsPage extends StatefulWidget {
+class DataTeamsPage extends StatefulWidget with CacheManager {
   const DataTeamsPage({Key? key}) : super(key: key);
 
   @override
@@ -75,13 +76,15 @@ class _DataTeamsPageState extends State<DataTeamsPage> {
           'Teams',
         ),
         actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/teams-input');
-            },
-            icon: const Icon(Icons.add),
-            iconSize: 30,
-          )
+          widget.getName() == 'Admin'
+              ? IconButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/teams-input');
+                  },
+                  icon: const Icon(Icons.add),
+                  iconSize: 30,
+                )
+              : Container(),
         ],
       ),
       body: ListView(
@@ -106,37 +109,41 @@ class _DataTeamsPageState extends State<DataTeamsPage> {
               selectedTeams != null
                   ? Row(
                       children: [
-                        GestureDetector(
-                          child: const Icon(Icons.remove_red_eye),
-                          onTapUp: (details) {},
-                        ),
+                        // GestureDetector(
+                        //   child: const Icon(Icons.remove_red_eye),
+                        //   onTapUp: (details) {},
+                        // ),
+                        // const SizedBox(
+                        //   width: 20,
+                        // ),
+                        widget.getName() == 'Admin'
+                            ? GestureDetector(
+                                child: const Icon(Icons.edit),
+                                onTapUp: (details) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => DataTeamsInputPage(
+                                        data: selectedTeams!,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              )
+                            : Container(),
                         const SizedBox(
                           width: 20,
                         ),
-                        GestureDetector(
-                          child: const Icon(Icons.edit),
-                          onTapUp: (details) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => DataTeamsInputPage(
-                                  data: selectedTeams!,
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        GestureDetector(
-                          child: const Icon(Icons.delete),
-                          onTapUp: (details) {
-                            EasyLoading.show(status: 'loading...');
-                            deleteTeams();
-                            EasyLoading.dismiss();
-                          },
-                        ),
+                        widget.getName() == 'Admin'
+                            ? GestureDetector(
+                                child: const Icon(Icons.delete),
+                                onTapUp: (details) {
+                                  EasyLoading.show(status: 'loading...');
+                                  deleteTeams();
+                                  EasyLoading.dismiss();
+                                },
+                              )
+                            : Container()
                       ],
                     )
                   : Container()

@@ -1,4 +1,5 @@
 import 'package:espot/models/event_model.dart';
+import 'package:espot/shared/cache_manager.dart';
 import 'package:espot/shared/constant.dart';
 import 'package:espot/ui/pages/data_events_input_page.dart';
 import 'package:espot/ui/widgets/data_event_item.dart';
@@ -7,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:espot/shared/theme.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-class DataEventPage extends StatefulWidget {
+class DataEventPage extends StatefulWidget with CacheManager {
   const DataEventPage({Key? key}) : super(key: key);
 
   @override
@@ -75,13 +76,15 @@ class _DataEventPageState extends State<DataEventPage> {
           'Events',
         ),
         actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/event-input');
-            },
-            icon: const Icon(Icons.add),
-            iconSize: 30,
-          )
+          widget.getName() == 'Admin'
+              ? IconButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/event-input');
+                  },
+                  icon: const Icon(Icons.add),
+                  iconSize: 30,
+                )
+              : Container()
         ],
       ),
       body: ListView(
@@ -106,37 +109,43 @@ class _DataEventPageState extends State<DataEventPage> {
               selectedEvents != null
                   ? Row(
                       children: [
-                        GestureDetector(
-                          child: const Icon(Icons.remove_red_eye),
-                          onTapUp: (details) {},
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        GestureDetector(
-                          child: const Icon(Icons.edit),
-                          onTapUp: (details) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => DataEventInputPage(
-                                  data: selectedEvents!,
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        GestureDetector(
-                          child: const Icon(Icons.delete),
-                          onTapUp: (details) {
-                            EasyLoading.show(status: 'loading...');
-                            deleteEvents();
-                            EasyLoading.dismiss();
-                          },
-                        ),
+                        // GestureDetector(
+                        //   child: const Icon(Icons.remove_red_eye),
+                        //   onTapUp: (details) {},
+                        // ),
+                        // const SizedBox(
+                        //   width: 20,
+                        // ),
+                        widget.getName() == 'Admin'
+                            ? GestureDetector(
+                                child: const Icon(Icons.edit),
+                                onTapUp: (details) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => DataEventInputPage(
+                                        data: selectedEvents!,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              )
+                            : Container(),
+                        widget.getName() == 'Admin'
+                            ? const SizedBox(
+                                width: 20,
+                              )
+                            : Container(),
+                        widget.getName() == 'Admin'
+                            ? GestureDetector(
+                                child: const Icon(Icons.delete),
+                                onTapUp: (details) {
+                                  EasyLoading.show(status: 'loading...');
+                                  deleteEvents();
+                                  EasyLoading.dismiss();
+                                },
+                              )
+                            : Container(),
                       ],
                     )
                   : Container()

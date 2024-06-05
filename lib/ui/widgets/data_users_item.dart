@@ -78,6 +78,15 @@ class DataUsersItem extends StatelessWidget {
                   height: 2,
                 ),
                 Text(
+                  dataUser.phone!,
+                  style: greyTextStyle.copyWith(
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(
+                  height: 2,
+                ),
+                Text(
                   dataUser.email!,
                   style: greyTextStyle.copyWith(
                     fontSize: 12,
