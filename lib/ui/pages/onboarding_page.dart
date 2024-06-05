@@ -15,15 +15,15 @@ class _OnboardingPageState extends State<OnboardingPage> {
   CarouselController controller = CarouselController();
 
   List<String> titles = [
-    'Monitoring\nLokasi Terakurat',
-    'Komunikasi\nLebih Mudah',
-    'Grafik espot',
+    'Manajement\nAcara',
+    'Keamanan dan Keandalan',
+    'Personalisasi\nPengalaman Pengguna',
   ];
 
   List<String> subtitles = [
-    'Aute nulla consectetur consequat deserunt dolor voluptate nisi eu esse laboris ullamco dolore proident.',
-    'Aute nulla consectetur consequat deserunt dolor voluptate nisi eu esse laboris ullamco dolore proident.',
-    'Tempor incididunt consectetur duis est minim commodo anim in adipisicing excepteur adipisicing exercitation quis magna.',
+    'eSpot menyediakan fitur manajemen acara yang komprehensif, mengelola tim.',
+    'Fitur keamanan yang kuat untuk melindungi data pengguna dan memastikan keandalan operasional.',
+    'Memungkinkan pengguna untuk menyesuaikan pengalaman mereka sesuai dengan preferensi pribadi',
   ];
 
   @override
