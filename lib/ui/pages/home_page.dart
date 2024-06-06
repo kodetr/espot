@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:espot/ui/widgets/home_service_item.dart';
 import 'package:espot/ui/widgets/home_work_today_item.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get/state_manager.dart';
 
 class HomePage extends StatefulWidget with CacheManager {
   const HomePage({Key? key}) : super(key: key);
@@ -22,10 +23,13 @@ class HomePage extends StatefulWidget with CacheManager {
 class _HomePageState extends State<HomePage> {
   List<TeamsModel> teamsList = [];
   List<EventModel> eventsList = [];
+  TeamsModel? selectedTeams;
+  // RxString name = ''.obs;
 
   @override
   void initState() {
-    print(widget.getName());
+    // name.value = widget.getName()!;
+
     _fetchEvents();
     _fetchTeams();
     super.initState();
@@ -161,6 +165,7 @@ class _HomePageState extends State<HomePage> {
             eventsList,
             teamsList,
           ),
+
           const SizedBox(
             height: 70,
           ),
@@ -229,6 +234,118 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildWorkToday(BuildContext context, String role,
+      List<EventModel> eventsList, List<TeamsModel> teamsList) {
+    return Container(
+      margin: const EdgeInsets.only(
+        top: 30,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            role == 'Admin' ? 'Confirmation' : 'Event',
+            style: blackTextStyle.copyWith(
+              fontSize: 16,
+              fontWeight: semiBold,
+            ),
+          ),
+          role == 'Admin'
+              ? Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  margin: const EdgeInsets.only(
+                    top: 14,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: whiteColor,
+                  ),
+                  child: ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: teamsList.length,
+                    itemBuilder: (contextx, index) {
+                      TeamsModel? dataTeams = teamsList[index];
+                      return dataTeams.verified == 0
+                          ? HomeWorkTodayItem(
+                              id: dataTeams.uid,
+                              name: dataTeams.desc,
+                              onTapAprove: () async {
+                                try {
+                                  EasyLoading.show(status: 'loading...');
+                                  String uid = dataTeams.uid!;
+
+                                  DatabaseReference userRef = FirebaseDatabase
+                                      .instance
+                                      .ref()
+                                      .child(TEAMS)
+                                      .child(uid);
+                                  await userRef.once();
+                                  await userRef.update({
+                                    'verified': 1,
+                                  });
+                                  EasyLoading.dismiss();
+                                } catch (e) {
+                                  print('Error: $e');
+                                  EasyLoading.dismiss();
+                                  CustomSnackBar.showToast(
+                                      context, 'Successfully Approved');
+                                }
+                                setState(() {
+                                  _fetchTeams();
+                                });
+                              },
+                              onTapReject: () async {
+                                try {
+                                  EasyLoading.show(status: 'loading...');
+                                  String uid = dataTeams.uid!;
+
+                                  DatabaseReference userRef = FirebaseDatabase
+                                      .instance
+                                      .ref()
+                                      .child(TEAMS)
+                                      .child(uid);
+                                  await userRef.once();
+                                  await userRef.update({
+                                    'verified': 2,
+                                  });
+                                  EasyLoading.dismiss();
+                                  CustomSnackBar.showToast(
+                                      context, 'Successfully Reject');
+                                } catch (e) {
+                                  print('Error: $e');
+                                  EasyLoading.dismiss();
+                                }
+                                setState(() {
+                                  _fetchTeams();
+                                });
+                              },
+                              thumbnail: dataTeams.image,
+                            )
+                          : Container(
+                              margin: const EdgeInsets.only(bottom: 20),
+                              child:
+                                  const Center(child: Text('Data is missing')),
+                            );
+                    },
+                  ),
+                )
+              : ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: eventsList.length,
+                  itemBuilder: (context, index) {
+                    EventModel? dataEvents = eventsList[index];
+                    return DataEventItem(
+                      dataEvent: dataEvents,
+                    );
+                  },
+                ),
         ],
       ),
     );
@@ -305,113 +422,6 @@ Widget buildServices(BuildContext context, String role) {
                 : Container(),
           ],
         ),
-      ],
-    ),
-  );
-}
-
-Widget buildWorkToday(BuildContext context, String role,
-    List<EventModel> eventsList, List<TeamsModel> teamsList) {
-  TeamsModel? selectedTeams;
-
-  return Container(
-    margin: const EdgeInsets.only(
-      top: 30,
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          role == 'Admin' ? 'Confirmation' : 'Event',
-          style: blackTextStyle.copyWith(
-            fontSize: 16,
-            fontWeight: semiBold,
-          ),
-        ),
-        role == 'Admin'
-            ? Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                margin: const EdgeInsets.only(
-                  top: 14,
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: whiteColor,
-                ),
-                child: ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: teamsList.length,
-                  itemBuilder: (contextx, index) {
-                    TeamsModel? dataTeams = teamsList[index];
-                    return dataTeams.verified == 0
-                        ? HomeWorkTodayItem(
-                            id: dataTeams.uid,
-                            name: dataTeams.desc,
-                            onTapAprove: () async {
-                              try {
-                                EasyLoading.show(status: 'loading...');
-                                String uid = dataTeams.uid!;
-
-                                DatabaseReference userRef = FirebaseDatabase
-                                    .instance
-                                    .ref()
-                                    .child(TEAMS)
-                                    .child(uid);
-                                await userRef.once();
-                                await userRef.update({
-                                  'verified': 1,
-                                });
-                                EasyLoading.dismiss();
-                              } catch (e) {
-                                print('Error: $e');
-                                EasyLoading.dismiss();
-                                CustomSnackBar.showToast(
-                                    context, 'Successfully Approved');
-                              }
-                            },
-                            onTapReject: () async {
-                              try {
-                                EasyLoading.show(status: 'loading...');
-                                String uid = dataTeams.uid!;
-
-                                DatabaseReference userRef = FirebaseDatabase
-                                    .instance
-                                    .ref()
-                                    .child(TEAMS)
-                                    .child(uid);
-                                await userRef.once();
-                                await userRef.update({
-                                  'verified': 2,
-                                });
-                                EasyLoading.dismiss();
-                                CustomSnackBar.showToast(
-                                    context, 'Successfully Reject');
-                              } catch (e) {
-                                print('Error: $e');
-                                EasyLoading.dismiss();
-                              }
-                            },
-                            thumbnail: dataTeams.image,
-                          )
-                        : Container(
-                            margin: const EdgeInsets.only(bottom: 20),
-                            child: const Center(child: Text('Data is missing')),
-                          );
-                  },
-                ),
-              )
-            : ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: eventsList.length,
-                itemBuilder: (context, index) {
-                  EventModel? dataEvents = eventsList[index];
-                  return DataEventItem(
-                    dataEvent: dataEvents,
-                  );
-                },
-              ),
       ],
     ),
   );

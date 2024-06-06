@@ -21,6 +21,12 @@ class _SignInPageState extends State<SignInPage> with CacheManager {
   final emailController = TextEditingController(text: '');
   final passwordController = TextEditingController(text: '');
 
+  @override
+  void initState() {
+    removeAll();
+    super.initState();
+  }
+
   Future<User?> signInWithEmailAndPassword(
       String email, String password) async {
     try {
@@ -115,6 +121,7 @@ class _SignInPageState extends State<SignInPage> with CacheManager {
                 title: 'Sign In',
                 onPressed: () async {
                   EasyLoading.show(status: 'loading...');
+
                   User? user = await signInWithEmailAndPassword(
                       emailController.text, passwordController.text);
 
@@ -133,6 +140,7 @@ class _SignInPageState extends State<SignInPage> with CacheManager {
 
                           setState(() {
                             UserModel user = UserModel.fromMap(userData, uid);
+
                             saveUser(user);
                           });
                           EasyLoading.dismiss();
