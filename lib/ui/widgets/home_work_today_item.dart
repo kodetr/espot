@@ -8,6 +8,7 @@ class HomeWorkTodayItem extends StatelessWidget {
   final String? name;
   final int? progress;
   final String? thumbnail;
+  final VoidCallback? onTapDetail;
   final VoidCallback? onTapAprove;
   final VoidCallback? onTapReject;
 
@@ -18,6 +19,7 @@ class HomeWorkTodayItem extends StatelessWidget {
     this.name,
     this.progress,
     this.thumbnail,
+    this.onTapDetail,
     this.onTapAprove,
     this.onTapReject,
   }) : super(key: key);
@@ -28,19 +30,22 @@ class HomeWorkTodayItem extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          width: 45,
-          height: 45,
-          margin: const EdgeInsets.only(
-            bottom: 20,
-          ),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            image: DecorationImage(
-                fit: BoxFit.cover,
-                image: NetworkImage(
-                  thumbnail!,
-                )),
+        GestureDetector(
+          onTap: onTapDetail,
+          child: Container(
+            width: 45,
+            height: 45,
+            margin: const EdgeInsets.only(
+              bottom: 20,
+            ),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: NetworkImage(
+                    thumbnail!,
+                  )),
+            ),
           ),
         ),
         const SizedBox(

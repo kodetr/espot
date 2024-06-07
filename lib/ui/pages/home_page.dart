@@ -7,6 +7,7 @@ import 'package:espot/shared/theme.dart';
 import 'package:espot/ui/widgets/data_event_item.dart';
 import 'package:espot/ui/widgets/data_teams_item.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:espot/ui/widgets/home_service_item.dart';
 import 'package:espot/ui/widgets/home_work_today_item.dart';
@@ -275,6 +276,19 @@ class _HomePageState extends State<HomePage> {
                           ? HomeWorkTodayItem(
                               id: dataTeams.uid,
                               name: dataTeams.desc,
+                              onTapDetail: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return CupertinoAlertDialog(
+                                          scrollController: ScrollController(),
+                                          insetAnimationCurve:
+                                              Curves.decelerate,
+                                          actions: [
+                                            DataTeamsItem(dataTeams: dataTeams)
+                                          ]);
+                                    });
+                              },
                               onTapAprove: () async {
                                 try {
                                   EasyLoading.show(status: 'loading...');
